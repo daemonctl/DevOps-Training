@@ -1,2 +1,2 @@
 #!/bin/bash
-chown tomcat:tomcat ./target/petclinic.war
+sudo chown tomcat:tomcat ./target/petclinic.war
