@@ -1,2 +1,2 @@
 #!/bin/bash
-cd chown tomcat:tomcat ./target/petclinic.war
+chown tomcat:tomcat ./target/petclinic.war
