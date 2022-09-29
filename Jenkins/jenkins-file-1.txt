@@ -1,0 +1,35 @@
+node{
+    cleanWs cleanWhenFailure: false
+}
+
+node {
+    stage("Preparation"){
+        echo 'hello'
+    }
+}
+stage('Clone Approve'){
+    script {
+        input(message: 'Clone yapılsın mı?')
+    }
+}
+node {
+    stage('Git clone') { // for display purposes
+        git branch: 'main', credentialsId: '6544f0f8-a427-4d3a-b61b-04fdc1edbfe0', url: 'https://github.com/khergner/DevOps-Training.git'
+    }
+    stage("Proje List") {
+        sh 'ls -la'
+    }
+    stage('Build') {
+        // Run the maven build
+        dir('kubernetes-java-hellokubernetes') {
+            sh "ls"
+            def mavenHome= "/var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven/bin"
+            sh "export PATH=$mavenHome:$PATH && mvn clean package"
+        }
+    }
+    stage('Results') {
+        dir('kubernetes-java-hellokubernetes/target') {
+            archiveArtifacts 'hello-kubernetes-1.0.0.jar'
+        }
+    }
+}
