@@ -1,0 +1,31 @@
+node {
+    stage('Preparation'){
+        echo 'Ci-Cd starting...'
+    }
+}
+stage('Clone Approve'){
+    script {
+        input(message: 'Clone yapılsın mı?')
+    }
+}
+node {
+    stage('Git clone'){
+        git branch: 'main', credentialsId: 'github-khergner', url: 'https://github.com/khergner/DevOps-Training.git'
+    }
+    stage('Proje folder List'){
+        sh '''
+        ls -la
+        ls -latr '''
+    }
+    stage('Build'){
+        dir('kubernetes-java-hellokubernetes'){
+            def mavenhome = "/var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven/bin"
+            sh "export PATH=$mavenhome:$PATH && mvn clean install"
+        }
+    }
+    stage('Archive'){
+        dir('kubernetes-java-hellokubernetes/target'){
+            archiveArtifacts 'hello-kubernetes-1.0.0.jar'
+        }
+    }
+}
